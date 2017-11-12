@@ -1,5 +1,7 @@
 ﻿using System.Configuration;
 using Topshelf;
+using Contract;
+using EFDatabaseClient;
 
 namespace WindowsServiceTask
 {
@@ -7,9 +9,12 @@ namespace WindowsServiceTask
     {
         static void Main(string[] args)
         {
-            var emailAddress = ConfigurationManager.AppSettings["address"];
+            var emailAddress = ConfigurationManager.AppSettings["email"];
 
-            HostFactory.Run(x => x.Service<EmailService>());
+            IDatabaseReader reader = new EFDatabaseReader("DefaultConnection");
+            var data = reader.ReadData();
+
+            //HostFactory.Run(x => x.Service<EmailService>());
         }
     }
 }
