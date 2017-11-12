@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Configuration;
+using Topshelf;
 
 namespace WindowsServiceTask
 {
@@ -10,6 +7,9 @@ namespace WindowsServiceTask
     {
         static void Main(string[] args)
         {
+            var emailAddress = ConfigurationManager.AppSettings["address"];
+
+            HostFactory.Run(x => x.Service<EmailService>());
         }
     }
 }
