@@ -1,7 +1,10 @@
-﻿namespace Contract
+﻿using System;
+using System.Collections.Generic;
+
+namespace Contract
 {
-    public interface IEmailSender
+    public interface IEmailSender : IDisposable
     {
-        bool Send(EmailModel model);
+        void Send(List<EmailModel> emailList);
     }
 }

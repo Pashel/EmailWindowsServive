@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Contract;
 
@@ -6,17 +7,20 @@ namespace EFDatabaseClient
 {
     public class EFDatabaseReader : IDatabaseReader
     {
-        private readonly string _connectionString;
+        private readonly EmailContext _db;
         public EFDatabaseReader(string connectionString)
         {
-            _connectionString = connectionString;
+            _db = new EmailContext(connectionString);
         }
 
         public List<EmailModel> ReadData()
+        { 
+            return _db.EmailModel.ToList();
+        }
+
+        public void Dispose()
         {
-            using (var db = new EmailContext(_connectionString)) {
-                return db.EmailModel.ToList();
-            }
+            _db?.Dispose();
         }
     }
 }

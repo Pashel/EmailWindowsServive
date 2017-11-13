@@ -1,7 +1,11 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Configuration;
 using Topshelf;
+using Topshelf.Runtime;
 using Contract;
 using EFDatabaseClient;
+using EmailSender;
+
 
 namespace WindowsServiceTask
 {
@@ -12,9 +16,16 @@ namespace WindowsServiceTask
             var emailAddress = ConfigurationManager.AppSettings["email"];
 
             IDatabaseReader reader = new EFDatabaseReader("DefaultConnection");
-            var data = reader.ReadData();
+            IEmailSender sender = new StandardEmailSender(emailAddress);
+            
+            HostFactory.Run(
+                x => x.Service<EmailService>(conf => {
+                    conf.ConstructUsing(() => new EmailService(reader, sender));
+                    conf.WhenStarted(s => s.Start());
+                    conf.WhenStopped(s => s.Stop());
+                }));
 
-            //HostFactory.Run(x => x.Service<EmailService>());
+            Console.ReadLine();
         }
     }
 }
