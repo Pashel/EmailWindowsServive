@@ -1,5 +1,6 @@
 ﻿using System.Threading;
 using System.Collections.Generic;
+using System.Net.Configuration;
 using Contract;
 using Topshelf;
 
@@ -11,6 +12,9 @@ namespace WindowsServiceTask
         private readonly IEmailSender _sender;
         private readonly Timer _timer;
 
+        private readonly object _locker = new object();
+        private bool _finish = false;
+
         public EmailService(IDatabaseReader reader, IEmailSender sender)
         {
             _reader = reader;
@@ -20,8 +24,12 @@ namespace WindowsServiceTask
 
         public void WorkProcedure(object target)
         {
-            var model = _reader.ReadData();
-            _sender.Send(model);
+            lock (_locker) {
+                if (_finish) return;
+
+                var model = _reader.ReadData();
+                _sender.Send(model);
+            }
         }
 
         public bool Start()
@@ -32,9 +40,12 @@ namespace WindowsServiceTask
 
         public bool Stop()
         {
-            _timer.Change(Timeout.Infinite, 0);
-            _reader.Dispose();
-            _sender.Dispose();
+            lock (_locker) {
+                _timer.Dispose();
+                _reader.Dispose();
+                _sender.Dispose();
+                _finish = true;
+            }
             return true;
         }
     }

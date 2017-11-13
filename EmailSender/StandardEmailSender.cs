@@ -13,12 +13,6 @@ namespace EmailSender
 
         public StandardEmailSender(string recieverAddress)
         {
-            // Don't work (probably epam blocks connection)
-            //_client = new SmtpClient("smtp.mail.ru", 465);
-            //_client.UseDefaultCredentials = false;
-            //_client.Credentials = new NetworkCredential("email.sender.service@mail.ru", "qqq@@aaa@zzz");
-            //_client.EnableSsl = true;
-
             _client = new SmtpClient();
             _recieverAddress = recieverAddress;
         }

@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Configuration;
+using System.IO;
 using Topshelf;
 using Topshelf.Runtime;
 using Contract;
 using EFDatabaseClient;
 using EmailSender;
-
 
 namespace WindowsServiceTask
 {
@@ -13,6 +13,7 @@ namespace WindowsServiceTask
     {
         static void Main(string[] args)
         {
+            Directory.CreateDirectory(@"C:/Emails");
             var emailAddress = ConfigurationManager.AppSettings["email"];
 
             IDatabaseReader reader = new EFDatabaseReader("DefaultConnection");
@@ -24,8 +25,6 @@ namespace WindowsServiceTask
                     conf.WhenStarted(s => s.Start());
                     conf.WhenStopped(s => s.Stop());
                 }));
-
-            Console.ReadLine();
         }
     }
 }
