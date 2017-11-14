@@ -1,6 +1,4 @@
-﻿using System;
-using System.Configuration;
-using System.IO;
+﻿using System.Configuration;
 using Topshelf;
 using Topshelf.Runtime;
 using Contract;
@@ -13,18 +11,20 @@ namespace WindowsServiceTask
     {
         static void Main(string[] args)
         {
-            Directory.CreateDirectory(@"C:/Emails");
             var emailAddress = ConfigurationManager.AppSettings["email"];
 
             IDatabaseReader reader = new EFDatabaseReader("DefaultConnection");
             IEmailSender sender = new StandardEmailSender(emailAddress);
             
             HostFactory.Run(
-                x => x.Service<EmailService>(conf => {
-                    conf.ConstructUsing(() => new EmailService(reader, sender));
-                    conf.WhenStarted(s => s.Start());
-                    conf.WhenStopped(s => s.Stop());
-                }));
+                x => {
+                    x.Service<EmailService>(conf => {
+                        conf.ConstructUsing(() => new EmailService(reader, sender));
+                        conf.WhenStarted(s => s.Start());
+                        conf.WhenStopped(s => s.Stop());
+                    });
+                    x.SetServiceName("Email Sender Service");
+                });
         }
     }
 }

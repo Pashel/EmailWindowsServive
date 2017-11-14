@@ -1,8 +1,5 @@
 ﻿using System.Threading;
-using System.Collections.Generic;
-using System.Net.Configuration;
 using Contract;
-using Topshelf;
 
 namespace WindowsServiceTask
 {
@@ -22,7 +19,7 @@ namespace WindowsServiceTask
             _timer = new Timer(WorkProcedure);
         }
 
-        public void WorkProcedure(object target)
+        private void WorkProcedure(object target)
         {
             lock (_locker) {
                 if (_finish) return;
@@ -41,9 +38,9 @@ namespace WindowsServiceTask
         public bool Stop()
         {
             lock (_locker) {
-                _timer.Dispose();
-                _reader.Dispose();
-                _sender.Dispose();
+                _timer?.Dispose();
+                _reader?.Dispose();
+                _sender?.Dispose();
                 _finish = true;
             }
             return true;

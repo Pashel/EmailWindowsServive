@@ -1,7 +1,6 @@
-﻿using System;
-using Contract;
-using System.Net;
+﻿using Contract;
 using System.Collections.Generic;
+using System.IO;
 using System.Net.Mail;
 
 namespace EmailSender
@@ -15,6 +14,11 @@ namespace EmailSender
         {
             _client = new SmtpClient();
             _recieverAddress = recieverAddress;
+
+            var outputDir = @"C:\Emails";
+            if (Directory.Exists(outputDir)) {
+                Directory.CreateDirectory(outputDir);
+            }
         }
 
         public void Send(List<EmailModel> emailList)
