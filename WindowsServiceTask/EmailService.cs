@@ -38,9 +38,9 @@ namespace WindowsServiceTask
         public bool Stop()
         {
             lock (_locker) {
-                _timer?.Dispose();
-                _reader?.Dispose();
-                _sender?.Dispose();
+                _timer.Dispose();
+                _reader.Dispose();
+                _sender.Dispose();
                 _finish = true;
             }
             return true;
